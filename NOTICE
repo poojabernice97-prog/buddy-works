@@ -1,0 +1,19 @@
+Buddy (buddy-works)
+
+Copyright 2026 Buddy contributors
+
+This product is derived from OpenBot (https://github.com/CopilotKit/openbot),
+Copyright (c) CopilotKit and contributors, licensed under the MIT License.
+See the LICENSE file in this repository for the OpenBot license text and
+copyright notice, which are preserved unchanged.
+
+Buddy-specific code, documentation, and configuration in this repository are
+also licensed under the MIT License unless a file states otherwise.
+
+CopilotKit Intelligence
+
+CopilotKit Intelligence is a separate commercial offering from CopilotKit. It is
+NOT included in this repository, NOT sublicensed here, and NOT required to run
+the open-source Buddy layer on a self-hosted OpenBot deployment. Deployments that
+choose to connect Intelligence do so under CopilotKit's terms for that product,
+independently of this repository's MIT license.

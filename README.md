@@ -1,3 +1,8 @@
+> **Buddy fork:** This repository layers the open-source [Buddy](docs/buddy/README.md) program-management
+> coworker on OpenBot **v1.0.2**. Upstream: [CopilotKit/openbot](https://github.com/CopilotKit/openbot) —
+> see [UPSTREAM.md](UPSTREAM.md) and [NOTICE](NOTICE). CopilotKit Intelligence is separately licensed and
+> not included here.
+
 <div align="center">
 
 <img src="app/src/assets/openbot-logo.png" alt="" width="72">

@@ -1,0 +1,78 @@
+name: Buddy Phase 0 CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - "buddy/**"
+      - "supabase/**"
+      - ".github/workflows/buddy-ci.yml"
+      - "NOTICE"
+      - "UPSTREAM.md"
+      - "CONTRIBUTING.md"
+      - "CODE_OF_CONDUCT.md"
+      - "SECURITY.md"
+      - "docs/buddy/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: buddy-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  buddy-static:
+    name: Buddy tenant and docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.3
+      - run: bun install --frozen-lockfile
+      - name: Buddy tenant package tests
+        run: bun test buddy/tests
+      - name: Format Buddy YAML and TypeScript (Biome)
+        run: bunx biome check buddy/
+
+  supabase-migrations:
+    name: Supabase migration SQL
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: buddy_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Apply Buddy migration (auth stub)
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -d buddy_ci -v ON_ERROR_STOP=1 <<'SQL'
+          create schema if not exists auth;
+          create table auth.users (id uuid primary key);
+          insert into auth.users (id) values ('00000000-0000-0000-0000-000000000001');
+          SQL
+          psql -h localhost -U postgres -d buddy_ci -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/20261112000000_buddy_schema.sql
+      - name: Verify RLS is enabled
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -d buddy_ci -v ON_ERROR_STOP=1 -c \
+            "select tablename, rowsecurity from pg_tables where schemaname = 'buddy' order by tablename;"

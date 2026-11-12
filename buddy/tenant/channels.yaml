@@ -1,0 +1,21 @@
+channels:
+  - id: buddy
+    name: Buddy
+    description: Your program-management thought partner; routes to Hermes, Athena and Hercules.
+    permitted_agents: [buddy, hermes, athena, hercules]
+    allowed_groups: [all]
+  - id: hermes
+    name: Hermes
+    description: Proactive operations — check-ins, nudges, and hygiene (stub in Phase 0).
+    permitted_agents: [hermes, buddy]
+    allowed_groups: [all]
+  - id: athena
+    name: Athena
+    description: Contingency planning and what-if analysis (stub in Phase 0).
+    permitted_agents: [athena, buddy]
+    allowed_groups: [all]
+  - id: hercules
+    name: Hercules
+    description: Unblocking and practical problem solving (stub in Phase 0).
+    permitted_agents: [hercules, buddy]
+    allowed_groups: [all]

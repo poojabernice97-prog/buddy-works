@@ -1,0 +1,3 @@
+# Portfolio memory lives in Supabase (buddy schema) in Phase 1+.
+# OpenBot knowledge connectors can be added here when integrations ship.
+sources: []
