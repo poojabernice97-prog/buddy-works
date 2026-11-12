@@ -1,6 +1,8 @@
+> Archived from the OpenBot v1.0.2 root README. Links and assets below are relative to the **repository root**; from this file, prefix paths with `../../` when browsing on GitHub. For Buddy, see the repository [README](../../README.md).
+
 <div align="center">
 
-<img src="app/src/assets/openbot-logo.png" alt="" width="72">
+<img src="../../app/src/assets/openbot-logo.png" alt="" width="72">
 
 # OpenBot
 
