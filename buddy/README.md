@@ -11,4 +11,4 @@ Configure:
 TENANT_PACKAGE_DIR=../buddy/tenant
 ```
 
-Documentation: [docs/buddy/README.md](../docs/buddy/README.md)
+Documentation: [README](../README.md)
