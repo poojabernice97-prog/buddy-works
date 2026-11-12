@@ -57,3 +57,7 @@ venv/
 
 # The Recorder extension's signing key never enters the repository (Decision 9).
 extension/**/*.pem
+
+# Supabase CLI local state (migrations and functions are committed)
+supabase/.branches
+supabase/.temp
