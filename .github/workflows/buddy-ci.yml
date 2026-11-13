@@ -81,6 +81,8 @@ jobs:
           SQL
           psql -h localhost -U postgres -d buddy_ci -v ON_ERROR_STOP=1 \
             -f supabase/migrations/20261112000000_buddy_schema.sql
+          psql -h localhost -U postgres -d buddy_ci -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/20261113000000_buddy_phase_1a_memory.sql
       - name: Verify RLS is enabled
         env:
           PGPASSWORD: postgres

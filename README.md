@@ -11,8 +11,8 @@ License: MIT (this repo). See [NOTICE](NOTICE) for OpenBot attribution and the *
 | Differentiator | Today (Phase 0) | Planned |
 | --- | --- | --- |
 | **Acts** on your behalf (schedule, nudge, gather context) | Stubs + OpenBot approval model only | Hermes + integrations (Phase 2+) |
-| **Remembers** across projects (RAID, decisions, collisions) | Supabase schema + stubs; not wired to chat | Portfolio graph in Supabase (Phase 1+) |
-| **Pushes back** before create (dates, owners, trade-offs) | Buddy router prompt + handoff to specialists | Full pushback engine + trade-off briefs (Phase 1+) |
+| **Remembers** across projects (RAID, decisions, collisions) | Supabase schema, profiles, private thoughts; server memory client (not wired in chat yet) | Live sync + collision radar (Phase 2+) |
+| **Pushes back** before create (dates, owners, trade-offs) | **Phase 1a:** pushback skill + unit-tested triggers; trade-off brief shape in prompts | Morning check-in + ticket create (Phase 1b+) |
 
 ### Coworkers (one surface, three specialists)
 
@@ -32,7 +32,8 @@ Tenant definitions: [`buddy/tenant/agents.yaml`](buddy/tenant/agents.yaml).
 | Phase | Focus | Status |
 | --- | --- | --- |
 | **0 — Foundation** | OpenBot base, Buddy tenant, Supabase schema, docs, CI | **This repo today** |
-| **1 — Thinking partner** | Pushback instructions, project memory, morning check-in (paste/upload) | Planned |
+| **1a — Thought partner** | Pushback engine skill, trade-off briefs, memory tables + server client | **This repo (Phase 1a)** |
+| **1b — Thinking partner** | Morning check-in, chat wired to Supabase memory | Planned |
 | **2 — Read-only reach** | Calendar & Slack read, collision radar on portfolio data | Planned |
 | **3 — Act with approvals** | Draft → approve → act; audit & undo | Planned |
 | **4 — Full program chief of staff** | Meeting autopilot, tripwire plans, cross-project collision radar | Planned |
@@ -54,7 +55,8 @@ PMBOK 8–inspired checks (schedule, scope, risk, stakeholders, etc.) are encode
                              │ Phase 1+ (service role, server-side)
 ┌────────────────────────────▼─────────────────────────────────┐
 │  Supabase — schema `buddy`                                    │
-│  projects · raid_items · decisions · event webhook (stub)     │
+│  projects · raid · decisions · profiles · private_thoughts    │
+│  · memory_sources · event webhook (stub)                      │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -92,7 +94,9 @@ Open the app (default [http://localhost:3010](http://localhost:3010)), start a *
 
 | Piece | Purpose |
 | --- | --- |
-| `supabase/migrations/` | `buddy` schema: `projects`, `raid_items`, `decisions`; RLS owner-scoped |
+| `supabase/migrations/` | `buddy` schema: portfolio tables, profiles, private thoughts, memory sync; RLS owner-scoped |
+| `buddy/lib/` | Pushback trigger detector and trade-off brief validation (unit-tested) |
+| `buddy/server/memory-client.ts` | Server-side Supabase helpers (service role; not shipped to browser) |
 | `supabase/functions/buddy-event-webhook/` | External event webhook (**stub**, returns 501) |
 
 **Local:**

@@ -1,2 +1,56 @@
-# Phase 0: no Buddy-specific skills yet. OpenBot skills can be added as integrations ship.
-skills: []
+# Buddy Phase 1a skills — thought-partner pushback and trade-off briefs (no external tools).
+skills:
+  - slug: pushback-engine
+    title: Challenge before create
+    summary: Detect vague plans and ask up to three pushback questions before any draft.
+    instructions: >-
+      You run Buddy's opinionated pushback engine before creating any ticket, invite, or outbound
+      message. Use these named triggers (original rules, not copied from any external guide):
+
+      1. **Date without basis** (schedule): the user gives a deadline or ship date without saying who
+         estimated it or from what work.
+      2. **Task without dependencies** (schedule): new work is added without naming what must land
+         first.
+      3. **Mid-project request** (scope, governance): scope grows or a new ask arrives without what
+         it displaces or who approved the change.
+      4. **Vague stakeholder alignment** (stakeholders): phrases like "stakeholders are on board" or
+         "everyone agrees" without names, dates, or dissent.
+      5. **Single point of failure** (resources, risk): one person is the only owner of critical work.
+      6. **Zero buffer** (risk): the plan has no reserve, slack, or explicit contingency.
+      7. **Loose definition of done** (scope): "done" or "ready" is not measurable or validated.
+      8. **Soft language** (risk): "should be fine", "probably", "soon", or similar without evidence.
+
+      **Pushback level** (from the user's Buddy profile when known, otherwise standard):
+
+      - *gentle*: offer at most one question, framed as an optional check.
+      - *standard* (default): ask at most three questions, most important first.
+      - *tough*: do not draft tickets, invites, or outbound messages until the key questions are
+        answered.
+
+      If portfolio memory already answers a question, say so instead of asking again. Label statements
+      as fact (from the user's data), inference, or general_practice. This phase does not create
+      tickets — only challenge and clarify.
+    tools: []
+
+  - slug: trade-off-brief
+    title: Trade-off brief
+    summary: After pushback answers, produce a fixed-shape brief before any ticket.
+    instructions: >-
+      After the user answers your pushback questions, produce a **trade-off brief** in this exact
+      order before proposing any ticket or outbound action:
+
+      1. **Decision** — what is being decided now.
+      2. **Options** — each named option and **what it trades away** (cost, risk, or scope given up).
+      3. **Dependencies and owners** — each dependency with a named owner (use an empty list if none).
+      4. **Stakeholders affected** — who is impacted or must align.
+      5. **Resulting work** — **owner**, **date**, and **acceptance criteria** for the work that
+         follows the decision.
+
+      Present the brief clearly (markdown sections are fine). Ask the user to approve the brief.
+      Do **not** create tickets, calendar events, or messages in Phase 1a — the brief is the
+      deliverable. If the user overrules you, record the decision in conversation and move on; do not
+      relitigate unless an assumption breaks.
+
+      When you state facts from memory, include `source` and `label` (fact | inference |
+      general_practice) in your reasoning so the PM can correct Buddy's memory later.
+    tools: []
