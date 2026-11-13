@@ -1273,6 +1273,12 @@ const routineStore = createRoutineStore(database);
 useRoutineTools(routineStore);
 // Routines is on from the start in every edition, for every Bot. See personal-defaults.ts.
 await ensureAlwaysOnApp(pluginStore, personalDefaultsDeps(database));
+const { ensureBuddyMemoryApp } = await import("./buddy-bootstrap.js");
+await ensureBuddyMemoryApp(
+  pluginStore,
+  personalDefaultsDeps(database),
+  tenantPackage.tenantId,
+);
 /*
  * The personal edition gives each Bot every skill once, so the skills there are reach every Bot and
  * one switched off for a Bot stays off. A failure is a warning: a Bot is given them again the first

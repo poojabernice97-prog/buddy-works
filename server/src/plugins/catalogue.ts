@@ -487,6 +487,27 @@ export const CATALOGUE: readonly CatalogueEntry[] = Object.freeze([
     docsUrl: "https://developers.notion.com/guides/mcp/build-mcp-client",
   },
   {
+    key: "buddy-memory",
+    title: "Buddy memory",
+    vendor: "Buddy",
+    summary:
+      "Portfolio memory in Supabase: projects, RAID, decisions, private thoughts, and uploads.",
+    personalSummary: "Your Buddy portfolio memory in Supabase.",
+    host: "builtin://buddy-memory",
+    path: "/",
+    transport: "builtin-buddy-memory",
+    auth: Object.freeze({ kind: "builtin" }),
+    writeTools: Object.freeze([
+      "buddy_save_project",
+      "buddy_save_raid_item",
+      "buddy_save_decision",
+      "buddy_save_private_thought",
+      "buddy_upload_transcript",
+    ]),
+    docsUrl:
+      "https://github.com/poojabernice97-prog/buddy-works/blob/main/buddy/README.md",
+  },
+  {
     key: "routines",
     title: "Routines",
     vendor: "OpenBot",

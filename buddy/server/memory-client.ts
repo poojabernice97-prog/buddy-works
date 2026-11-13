@@ -71,6 +71,14 @@ export interface BuddyPrivateThoughtRow {
   readonly content: string;
 }
 
+export interface BuddyMemorySourceRow {
+  readonly id: string;
+  readonly owner_id: string;
+  readonly source: string;
+  readonly label: string | null;
+  readonly last_synced_at: string | null;
+}
+
 const DEFAULT_AUTONOMY: BuddyAutonomyLevels = {
   morning_check_in: "draft",
   stakeholder_message: "draft",
@@ -90,12 +98,22 @@ export function createBuddyMemoryClientFromEnv(): BuddyMemoryClient {
   return new BuddyMemoryClient(
     createClient(url, serviceRoleKey, {
       db: { schema: "buddy" },
-    }),
+    }) as unknown as SupabaseClient,
   );
 }
 
 export class BuddyMemoryClient {
   constructor(private readonly client: SupabaseClient) {}
+
+  /** Supabase Storage client (bucket `buddy-uploads`). */
+  storage() {
+    return this.client.storage;
+  }
+
+  /** Underlying client (server-only; for storage reads). */
+  underlying(): SupabaseClient {
+    return this.client;
+  }
 
   async getOrCreateProfile(ownerId: string): Promise<BuddyProfile> {
     const { data, error } = await this.client
@@ -302,5 +320,46 @@ export class BuddyMemoryClient {
       throw error;
     }
     return data as BuddyPrivateThoughtRow;
+  }
+
+  async listMemorySources(ownerId: string): Promise<BuddyMemorySourceRow[]> {
+    const { data, error } = await this.client
+      .from("memory_sources")
+      .select("id, owner_id, source, label, last_synced_at")
+      .eq("owner_id", ownerId)
+      .order("last_synced_at", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+    return (data ?? []) as BuddyMemorySourceRow[];
+  }
+
+  async upsertMemorySource(
+    ownerId: string,
+    row: {
+      source: string;
+      label?: string | null;
+      last_synced_at?: string | null;
+    },
+  ): Promise<BuddyMemorySourceRow> {
+    const { data, error } = await this.client
+      .from("memory_sources")
+      .upsert(
+        {
+          owner_id: ownerId,
+          source: row.source,
+          label: row.label ?? null,
+          last_synced_at: row.last_synced_at ?? new Date().toISOString(),
+        },
+        { onConflict: "owner_id,source" },
+      )
+      .select("id, owner_id, source, label, last_synced_at")
+      .single();
+
+    if (error) {
+      throw error;
+    }
+    return data as BuddyMemorySourceRow;
   }
 }

@@ -87,8 +87,9 @@ export function createRoutineRunner(options: {
       return;
     }
 
-    const { routineId, ownerUserId, agentId, channelId, instruction, source } =
+    let { routineId, ownerUserId, agentId, channelId, instruction, source } =
       context;
+    const title = context.title;
     // Everything below is done AS the owner: their channel, their thread, their grants.
     const owner: AgentActor = { id: ownerUserId, role: "user" };
 
@@ -157,6 +158,14 @@ export function createRoutineRunner(options: {
     async function fire(threadId: string): Promise<void> {
       let replyText: string;
       try {
+        const { enrichBuddyRoutineInstruction } = await import(
+          "../buddy-turn-hook.js"
+        );
+        instruction = await enrichBuddyRoutineInstruction(instruction, {
+          title,
+          agentId,
+          ownerUserId,
+        });
         ({ replyText } = await runTurn({
           ownerUserId,
           telemetry: {

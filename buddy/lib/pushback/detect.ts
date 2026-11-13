@@ -1,9 +1,9 @@
-import { PUSHBACK_TRIGGER_RULES } from "./triggers.ts";
+import { PUSHBACK_TRIGGER_RULES } from "./triggers";
 import type {
   DetectedPushbackTrigger,
   PushbackDetectionResult,
   PushbackLevel,
-} from "./types.ts";
+} from "./types";
 
 const MAX_QUESTIONS_STANDARD = 3;
 const MAX_QUESTIONS_GENTLE = 1;
