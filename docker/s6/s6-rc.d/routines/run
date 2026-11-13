@@ -1,0 +1,8 @@
+#!/command/with-contenv sh
+# Fire due routines on a schedule when OPENBOT_ROUTINES_CRON=on (Buddy Fly TEST and similar).
+# Off by default so the upstream image is unchanged until a deployment opts in.
+set -eu
+if [ "${OPENBOT_ROUTINES_CRON:-off}" != "on" ]; then
+  exec /bin/true
+fi
+exec s6-setuidgid apiuser /usr/local/bin/supercronic -overlapping /etc/s6-overlay/crontab/routines

@@ -88,6 +88,10 @@ bun test buddy/tests           # Buddy tenant package tests
 
 Open the app (default [http://localhost:3010](http://localhost:3010)), start a **Buddy** channel, and chat with the router coworker.
 
+## Cloud TEST (Fly.io)
+
+Lean Buddy TEST on Fly.io (embedded Postgres, CopilotKit managed Intelligence, in-container routines sweep): **[docs/buddy/deploy-fly.md](docs/buddy/deploy-fly.md)**. Config only in this repo — no Fly resources are created automatically.
+
 ## Supabase setup
 
 **Hosted project ref (non-secret):** `zkpvtzefdtovhyoybbdq` (us-west-2).

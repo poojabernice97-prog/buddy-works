@@ -1,0 +1,2 @@
+# Routines sweep: one pass per tick, same script as the Helm chart CronJob (*/5 * * * *).
+*/5 * * * * cd /app/server && /usr/local/bin/bun scripts/fire-routines.ts
