@@ -1,4 +1,5 @@
 import * as arcade from "./arcade";
+import * as builtinBuddyMemory from "./builtin-buddy-memory";
 import * as builtinRoutines from "./builtin-routines";
 import * as composio from "./composio";
 import * as driveRest from "./google-drive-rest";
@@ -143,6 +144,7 @@ export type TransportKind =
   | "mcp"
   | "google-drive-rest"
   | "builtin-routines"
+  | "builtin-buddy-memory"
   | "composio"
   | "arcade";
 
@@ -172,6 +174,7 @@ const TRANSPORTS: Record<TransportKind, VendorTransport> = {
   mcp,
   "google-drive-rest": driveRest,
   "builtin-routines": builtinRoutines,
+  "builtin-buddy-memory": builtinBuddyMemory,
   composio,
   arcade,
 };

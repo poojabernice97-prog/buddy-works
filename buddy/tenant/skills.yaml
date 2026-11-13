@@ -1,4 +1,4 @@
-# Buddy Phase 1a skills — thought-partner pushback and trade-off briefs (no external tools).
+# Buddy Phase 1b — pushback, trade-offs, portfolio memory tools, morning check-in.
 skills:
   - slug: pushback-engine
     title: Challenge before create
@@ -27,9 +27,11 @@ skills:
       - *tough*: do not draft tickets, invites, or outbound messages until the key questions are
         answered.
 
+      **Deterministic pre-flight.** The server injects a `<buddy_pushback>` section with the exact
+      questions to ask when triggers match — use that list; do not improvise different questions.
+
       If portfolio memory already answers a question, say so instead of asking again. Label statements
-      as fact (from the user's data), inference, or general_practice. This phase does not create
-      tickets — only challenge and clarify.
+      as fact (from the user's data), inference, or general_practice.
     tools: []
 
   - slug: trade-off-brief
@@ -47,10 +49,53 @@ skills:
          follows the decision.
 
       Present the brief clearly (markdown sections are fine). Ask the user to approve the brief.
-      Do **not** create tickets, calendar events, or messages in Phase 1a — the brief is the
-      deliverable. If the user overrules you, record the decision in conversation and move on; do not
-      relitigate unless an assumption breaks.
+      Do **not** create tickets, calendar events, or messages without approval.
 
       When you state facts from memory, include `source` and `label` (fact | inference |
       general_practice) in your reasoning so the PM can correct Buddy's memory later.
-    tools: []
+    tools:
+      - buddy-memory/buddy_list_projects
+      - buddy-memory/buddy_save_project
+      - buddy-memory/buddy_list_raid_items
+      - buddy-memory/buddy_save_raid_item
+      - buddy-memory/buddy_list_decisions
+      - buddy-memory/buddy_save_decision
+
+  - slug: portfolio-memory
+    title: Portfolio memory
+    summary: Read and write RAID, decisions, projects, uploads, and private thoughts in Supabase.
+    instructions: >-
+      Use Buddy memory tools to load and update the PM's portfolio. Always set `source` and `label`
+      (fact | inference | general_practice) on RAID items and decisions you record from conversation.
+
+      Private thoughts (`buddy_save_private_thought`) are for strategist/operators only — never quote
+      them in outbound drafts without explicit approval.
+
+      Upload transcripts or ticket exports with `buddy_upload_transcript` (paste `content` or
+      base64 `content_base64` with `filename`).
+    tools:
+      - buddy-memory/buddy_list_projects
+      - buddy-memory/buddy_save_project
+      - buddy-memory/buddy_list_raid_items
+      - buddy-memory/buddy_save_raid_item
+      - buddy-memory/buddy_list_decisions
+      - buddy-memory/buddy_save_decision
+      - buddy-memory/buddy_list_private_thoughts
+      - buddy-memory/buddy_save_private_thought
+      - buddy-memory/buddy_list_memory_sources
+      - buddy-memory/buddy_upload_transcript
+
+  - slug: morning-check-in
+    title: Morning check-in
+    summary: Weekday strategic opening — questions and risks, not status dumps.
+    instructions: >-
+      Hermes runs this on the weekday morning routine. Read portfolio memory and any uploaded sources,
+      then open with two or three strategic questions or risk alerts. Never list every open item.
+      Never send Slack, email, or calendar changes from this skill.
+
+      Use memory tools if the routine snapshot is stale or the PM asks for detail.
+    tools:
+      - buddy-memory/buddy_list_projects
+      - buddy-memory/buddy_list_raid_items
+      - buddy-memory/buddy_list_decisions
+      - buddy-memory/buddy_list_memory_sources

@@ -701,6 +701,8 @@ export function builtInAgentConfiguration(
    * store (`picked-skill.ts`). Absent when they picked none.
    */
   pickedSkill?: string,
+  /** Buddy deterministic pushback pre-flight (Phase 1b). Absent when not applicable. */
+  buddyPushback?: string,
   /**
    * The apps this Bot holds, as they stand for this person: connected, needing a connection, and so
    * on. Absent says nothing about apps. See `grantedToolGuidance`.
@@ -850,6 +852,7 @@ export function builtInAgentConfiguration(
        * dropped before the model (`forwardSystemMessages` is never set). See `picked-skill.ts`.
        */
       ...promptSection("picked_skill", pickedSkill),
+      ...promptSection("buddy_pushback", buddyPushback),
     ].join("\n\n"),
     ...(planModel ? {} : { apiKey: apiKey ?? undefined }),
     // The run's thinking effort, when the person picked one the model takes. A plan's harness is
@@ -1613,6 +1616,7 @@ async function buildAgent(
     timeZone?: string,
     /** What the Bot is told for the skill this run's message picked. See `picked-skill.ts`. */
     pickedSkill?: string,
+    buddyPushback?: string,
   ) => {
     /*
      * What waits behind a search, decided where the run's tools are final. The count includes what
@@ -1649,6 +1653,7 @@ async function buildAgent(
       undefined,
       timeZone,
       pickedSkill,
+      buddyPushback,
       apps,
       {
         mode,
@@ -1750,6 +1755,13 @@ async function buildAgent(
           timeZone,
         );
       const pickedSkill = pickedSkillFor(input);
+      const { resolveBuddyPushbackPreflight } = await import(
+        "./buddy-turn-hook.js"
+      );
+      const buddyPushback = await resolveBuddyPushbackPreflight(
+        agent.id,
+        input,
+      );
       const learnedSkills = await acquireLearnedSkills?.(agent.id, signal);
       signal.throwIfAborted();
       if (
@@ -1797,7 +1809,8 @@ async function buildAgent(
         // `whole` carries the computer guidance, and this run holds no computer tool.
         !computerGuidance &&
         !timeZone &&
-        !pickedSkill
+        !pickedSkill &&
+        !buddyPushback
         ? whole
         : withTools(
             tools,
@@ -1808,6 +1821,7 @@ async function buildAgent(
             runModel,
             timeZone,
             pickedSkill,
+            buddyPushback,
           );
     },
   );

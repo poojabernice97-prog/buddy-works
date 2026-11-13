@@ -83,6 +83,28 @@ jobs:
             -f supabase/migrations/20261112000000_buddy_schema.sql
           psql -h localhost -U postgres -d buddy_ci -v ON_ERROR_STOP=1 \
             -f supabase/migrations/20261113000000_buddy_phase_1a_memory.sql
+          psql -h localhost -U postgres -d buddy_ci -v ON_ERROR_STOP=1 <<'SQL'
+          create schema if not exists storage;
+          create table if not exists storage.buckets (
+            id text primary key,
+            name text not null,
+            public boolean default false,
+            file_size_limit bigint,
+            allowed_mime_types text[]
+          );
+          create table if not exists storage.objects (
+            id uuid primary key default gen_random_uuid(),
+            bucket_id text,
+            name text,
+            owner uuid,
+            metadata jsonb,
+            created_at timestamptz default now(),
+            updated_at timestamptz default now()
+          );
+          alter table storage.objects enable row level security;
+          SQL
+          psql -h localhost -U postgres -d buddy_ci -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/20261114000000_buddy_phase_1b_uploads.sql
       - name: Verify RLS is enabled
         env:
           PGPASSWORD: postgres

@@ -23,8 +23,17 @@ describe("Buddy tenant package", () => {
   test("ships Phase 1a thought-partner skills on Buddy", async () => {
     const pkg = await loadTenantPackage(tenantDir);
     const slugs = pkg.skills.map((skill) => skill.slug).sort();
-    expect(slugs).toEqual(["pushback-engine", "trade-off-brief"]);
+    expect(slugs).toEqual([
+      "morning-check-in",
+      "portfolio-memory",
+      "pushback-engine",
+      "trade-off-brief",
+    ]);
     const buddy = pkg.agents.find((agent) => agent.id === "buddy");
-    expect(buddy?.skills).toEqual(["pushback-engine", "trade-off-brief"]);
+    expect(buddy?.skills).toEqual([
+      "pushback-engine",
+      "trade-off-brief",
+      "portfolio-memory",
+    ]);
   });
 });

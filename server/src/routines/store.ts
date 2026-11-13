@@ -198,6 +198,7 @@ export type RoutineRunContext = {
   ownerUserId: string;
   agentId: string;
   channelId: string;
+  title: string | null;
   instruction: string;
   /**
    * Read at the moment of running, so a routine switched off after its firing was dispatched (or a
@@ -1160,6 +1161,7 @@ export function createRoutineStore(database: Database): RoutineStore {
           ownerUserId: routines.ownerUserId,
           agentId: routines.agentId,
           channelId: routines.channelId,
+          title: routines.title,
           instruction: routines.instruction,
           enabled: routines.enabled,
         })
