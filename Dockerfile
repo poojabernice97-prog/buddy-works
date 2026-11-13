@@ -99,6 +99,11 @@ COPY toolkit toolkit
 # `server/src/tenant-package`, so the app cannot be built without it.
 COPY server server
 COPY examples examples
+COPY buddy buddy
+# Buddy Fly builds pass TENANT_PACKAGE_DIR=../buddy/tenant so the app dist matches the runtime tenant.
+# Unset (official CI and upstream image builds) keeps the default examples/fintech package in build-cache.
+ARG TENANT_PACKAGE_DIR
+ENV TENANT_PACKAGE_DIR=${TENANT_PACKAGE_DIR}
 RUN bun run --cwd app build
 
 
@@ -181,6 +186,9 @@ COPY server server
 COPY shared shared
 COPY toolkit toolkit
 COPY examples examples
+COPY buddy/package.json buddy/bun.lock buddy/
+RUN cd buddy && bun install --frozen-lockfile --production
+COPY buddy buddy
 COPY agent-computer/src agent-computer/src
 COPY agent-computer/package.json agent-computer/package.json
 
@@ -215,6 +223,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir -p /var/lib/postgresql/data /var/run/postgresql \
   && chown -R postgres:postgres /var/lib/postgresql /var/run/postgresql
+
+# Supercronic runs the routines sweep on a schedule inside one Fly Machine (see docker/s6/s6-rc.d/routines).
+ARG SUPERCRONIC_VERSION=0.2.33
+RUN set -eu; \
+    case "${TARGETARCH}" in \
+      amd64) SUPERCRONIC=supercronic-linux-amd64; SUPERCRONIC_SHA256=feefa310da569c81b99e1027b86b27b51e6ee9ab647747b49099645120cfc671 ;; \
+      arm64) SUPERCRONIC=supercronic-linux-arm64; SUPERCRONIC_SHA256=409e74c4b4e189f3dccbf3704bf9d0f4d3436170736e0c0a8bb5b8a38abd4ca ;; \
+      *) echo "unsupported architecture: ${TARGETARCH}" >&2; exit 1 ;; \
+    esac; \
+    curl -fsSL --retry 5 --retry-all-errors \
+      -o /usr/local/bin/supercronic \
+      "https://github.com/aptible/supercronic/releases/download/v${SUPERCRONIC_VERSION}/${SUPERCRONIC}"; \
+    echo "${SUPERCRONIC_SHA256}  /usr/local/bin/supercronic" | sha256sum -c -; \
+    chmod 0755 /usr/local/bin/supercronic
 
 # A Bot can install what a task needs, and nothing else as root.
 #

@@ -1,0 +1,47 @@
+# Buddy TEST on Fly.io — one always-on Machine (no auto-stop; Hermes routines need it).
+# Owner: run `fly launch --no-deploy` once to set `app` and org, then follow docs/buddy/deploy-fly.md.
+
+app = "buddy-openbot-test"
+primary_region = "sea"
+
+[build]
+  dockerfile = "Dockerfile"
+  [build.args]
+    TENANT_PACKAGE_DIR = "../buddy/tenant"
+
+[env]
+  EMBEDDED_POSTGRES = "on"
+  TENANT_PACKAGE_DIR = "../buddy/tenant"
+  OPENBOT_ROUTINES_CRON = "on"
+  SERVER_INTERNAL_URL = "http://127.0.0.1:3001"
+  INTELLIGENCE_API_URL = "https://api.intelligence.copilotkit.ai"
+  INTELLIGENCE_GATEWAY_WS_URL = "wss://realtime.intelligence.copilotkit.ai"
+  NODE_ENV = "production"
+  PORT = "3001"
+
+[http_service]
+  internal_port = 3001
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+  [[http_service.checks]]
+    interval = "15s"
+    timeout = "5s"
+    grace_period = "90s"
+    method = "GET"
+    path = "/health"
+
+# One shared vCPU with 2 GB RAM (OpenBot floor per docs/deployment.md). Cheaper than shared-cpu-2x.
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "2gb"
+  cpus = 1
+  cpu_kind = "shared"
+
+[[mounts]]
+  source = "openbot_pgdata"
+  destination = "/var/lib/postgresql"
+  processes = ["app"]
